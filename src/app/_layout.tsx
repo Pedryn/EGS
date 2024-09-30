@@ -81,6 +81,26 @@ export default function Layout() {
             tabBarButton: () => null, // Remove o index da TabBar 
         }} 
       />
+
+      <Tabs.Screen 
+        name="homeStyle" 
+        options={{ 
+            headerShown: false,
+            tabBarStyle: { display: 'none' }, // Esconde a TabBar na tela index
+            tabBarButton: () => null, // Remove o index da TabBar 
+        }} 
+      />
+
+      <Tabs.Screen 
+        name="produto" 
+        options={{ 
+            headerShown: false,
+            tabBarStyle: { display: 'none' }, // Esconde a TabBar na tela index
+            tabBarButton: () => null, // Remove o index da TabBar 
+        }} 
+      />
+    
     </Tabs>
+    
   );
 }

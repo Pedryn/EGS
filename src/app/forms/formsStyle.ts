@@ -51,6 +51,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
         textDecorationLine: 'underline',
     },
+    removeImageButton: {
+        position: 'absolute',
+        top: -10,
+        right: -10,
+        backgroundColor: 'white',
+        borderRadius: 12,
+    },
 });
 
 export default styles;
