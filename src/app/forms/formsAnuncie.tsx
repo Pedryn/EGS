@@ -18,6 +18,10 @@ export default function FormsAnuncie() {
     const [fabricante, setFabricante] = useState('');
     const [images, setImages] = useState<string[]>([]);  
     const [imageUrls, setImageUrls] = useState<string[]>([]); 
+    const [telefone, setTelefone] = useState('');
+
+    // Estado para as categorias
+    const [categorias, setCategorias] = useState<string[]>([]);
 
     // Função para selecionar várias imagens
     const pickImages = async () => {
@@ -76,7 +80,9 @@ export default function FormsAnuncie() {
                 certificacoes: certificacoes,
                 materiais: materiais,
                 fabricante: fabricante,
-                imageUrls: uploadedImageUrls
+                categorias: categorias, // Salvando categorias selecionadas
+                imageUrls: uploadedImageUrls,
+                telefone: telefone
             });
 
             // Limpar os campos após salvar
@@ -90,6 +96,7 @@ export default function FormsAnuncie() {
             setFabricante('');
             setImages([]);
             setImageUrls([]);
+            setCategorias([]); // Limpar categorias selecionadas
 
             // Exibir um pop-up de sucesso
             Alert.alert(
@@ -104,6 +111,15 @@ export default function FormsAnuncie() {
             Alert.alert("Erro", "Ocorreu um erro ao cadastrar o produto.");
         }
     }
+
+    // Função para gerenciar a seleção de categorias
+    const toggleCategoria = (categoria: string) => {
+        if (categorias.includes(categoria)) {
+            setCategorias(categorias.filter(item => item !== categoria));
+        } else {
+            setCategorias([...categorias, categoria]);
+        }
+    };
 
     return (
         <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
@@ -159,6 +175,30 @@ export default function FormsAnuncie() {
                 placeholder="Ex: Marcenaria XYZ"
             />
 
+            <Text style={styles.label}>Telefone para contato:</Text>
+            <TextInput 
+                value={telefone} 
+                onChangeText={setTelefone} 
+                style={styles.input} 
+                placeholder="Ex: (12)99999-9999"
+            />
+
+            <Text style={styles.label}>Categorias:</Text>
+            <View style={styles.checkboxContainer}>
+                <TouchableOpacity onPress={() => toggleCategoria('Reciclado')}>
+                    <Text style={categorias.includes('Reciclado') ? styles.checked : styles.unchecked}>Reciclado</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => toggleCategoria('Biodegradável')}>
+                    <Text style={categorias.includes('Biodegradável') ? styles.checked : styles.unchecked}>Biodegradável</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => toggleCategoria('Artesanato')}>
+                    <Text style={categorias.includes('Artesanato') ? styles.checked : styles.unchecked}>Artesanato</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => toggleCategoria('Reutilizável')}>
+                    <Text style={categorias.includes('Reutilizável') ? styles.checked : styles.unchecked}>Reutilizável</Text>
+                </TouchableOpacity>
+            </View>
+
             <TouchableOpacity onPress={pickImages}>
                 <Text style={styles.buttonText}>Escolher Imagens</Text>
             </TouchableOpacity>
@@ -182,3 +222,5 @@ export default function FormsAnuncie() {
         </ScrollView>
     );
 }
+
+

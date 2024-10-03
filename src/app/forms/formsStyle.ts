@@ -58,6 +58,27 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 12,
     },
+    checkboxContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginVertical: 10,
+    },
+    checked: {
+        backgroundColor: '#28a745',
+        color: '#fff',
+        padding: 10,
+        marginRight: 10,
+        borderRadius: 5,
+    },
+    unchecked: {
+        backgroundColor: '#fff',
+        color: '#000',
+        borderWidth: 1,
+        borderColor: '#28a745',
+        padding: 10,
+        marginRight: 10,
+        borderRadius: 5,
+    },
 });
 
 export default styles;
