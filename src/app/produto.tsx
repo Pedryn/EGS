@@ -83,7 +83,7 @@ const Produto = () => {
             {/* Preço e Nome */}
             <Text style={styles.productPrice}>R$ {produto.preco}</Text>
             <Text style={styles.productName}>{produto.nomeProd}</Text>
-            <Text style={styles.detailText}>Telefone para contato com o vendedor: {produto.telefone}</Text>
+            <Text style={styles.detailText}>Telefone do vendedor: {produto.telefone}</Text>
             
             {/* Botão Dropdown para Detalhes */}
             <TouchableOpacity style={styles.dropdownButton} onPress={toggleDetails}>
@@ -118,6 +118,7 @@ const Produto = () => {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'white',
         flex: 1,
         padding: 16,
     },
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 10,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: '#000',
         marginVertical: 10,
         borderRadius: 5,
     },
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     detailsContainer: {
         padding: 10,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: '#000',
         borderRadius: 5,
         marginTop: 0,
     },

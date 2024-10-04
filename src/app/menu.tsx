@@ -4,6 +4,11 @@ import { useRouter } from 'expo-router';
 export default function FormsAnuncie() {
     const router = useRouter();
 
+    // Função que navega para a página home com o filtro de categoria
+    const handleNavigateToHomeWithFilter = (categoria: string) => {
+        router.push({ pathname: '/home', params: { categoria } });
+    };
+
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
@@ -11,27 +16,39 @@ export default function FormsAnuncie() {
                 <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
                     <Text style={styles.linkText}>Compras</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity style={styles.button} onPress={() => router.push('/home')}>
                     <Text style={styles.linkText}>Anúncios</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
                     <Text style={styles.linkText}>Carrinho</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity style={styles.button} onPress={() => router.push('/conta')}>
                     <Text style={styles.linkText}>Pontos</Text>
                 </TouchableOpacity>
 
                 <Text style={styles.headerText}>Categorias de Produtos</Text>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
-                    <Text style={styles.linkText}>Recicláveis</Text>
+                <TouchableOpacity 
+                    style={styles.button} 
+                    onPress={() => handleNavigateToHomeWithFilter('Reciclado')}
+                >
+                    <Text style={styles.linkText}>Reciclado</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity 
+                    style={styles.button} 
+                    onPress={() => handleNavigateToHomeWithFilter('Biodegradável')}
+                >
                     <Text style={styles.linkText}>Biodegradável</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity 
+                    style={styles.button} 
+                    onPress={() => handleNavigateToHomeWithFilter('Reutilizável')}
+                >
                     <Text style={styles.linkText}>Reutilizável</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity 
+                    style={styles.button} 
+                    onPress={() => handleNavigateToHomeWithFilter('Artesanato')}
+                >
                     <Text style={styles.linkText}>Artesanato</Text>
                 </TouchableOpacity>
 

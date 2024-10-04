@@ -94,6 +94,7 @@ export default function FormsAnuncie() {
             setCertificacoes('');
             setMateriais('');
             setFabricante('');
+            setTelefone('');
             setImages([]);
             setImageUrls([]);
             setCategorias([]); // Limpar categorias selecionadas
@@ -125,6 +126,27 @@ export default function FormsAnuncie() {
         <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
             <Text style={styles.title}>Anuncie seu Produto</Text>
             
+            <TouchableOpacity style={styles.addFotoContainer} onPress={pickImages}>
+                <Image
+                    style={styles.addFoto}
+                    source={require('@/assets/images/addFoto.png')}
+                />
+                <Text style={styles.buttonText}>Escolher Imagens</Text>
+            </TouchableOpacity>
+
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                {images.map((image, index) => (
+                    <View key={index} style={{ position: 'relative', margin: 5 }}>
+                        <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
+                        <TouchableOpacity 
+                            style={styles.removeImageButton} 
+                            onPress={() => removeImage(index)}>
+                            <Ionicons name="close-circle" size={24} color="red" />
+                        </TouchableOpacity>
+                    </View>
+                ))}
+            </View>
+
             <Text style={styles.label}>Nome do Produto:</Text>
             <TextInput value={nomeProd} onChangeText={setNomeProd} style={styles.input} placeholder="Ex: Mesa de Madeira" />
 
@@ -197,23 +219,6 @@ export default function FormsAnuncie() {
                 <TouchableOpacity onPress={() => toggleCategoria('Reutilizável')}>
                     <Text style={categorias.includes('Reutilizável') ? styles.checked : styles.unchecked}>Reutilizável</Text>
                 </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity onPress={pickImages}>
-                <Text style={styles.buttonText}>Escolher Imagens</Text>
-            </TouchableOpacity>
-
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                {images.map((image, index) => (
-                    <View key={index} style={{ position: 'relative', margin: 5 }}>
-                        <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
-                        <TouchableOpacity 
-                            style={styles.removeImageButton} 
-                            onPress={() => removeImage(index)}>
-                            <Ionicons name="close-circle" size={24} color="red" />
-                        </TouchableOpacity>
-                    </View>
-                ))}
             </View>
 
             <TouchableOpacity style={styles.button} onPress={create}>

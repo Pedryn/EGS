@@ -32,7 +32,7 @@ const Index = () => {
           placeholder="*********"
         />
         <Button title="Enviar" onPress={handleNavigate}/>
-        <Link href={'./forms/formsCadastro'}>Criar conta</Link>
+        <Link style={styles.criarConta} href={'./forms/formsCadastro'}>Criar nova conta</Link>
       </View>
     </SafeAreaView>
   );
@@ -40,6 +40,7 @@ const Index = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   content: {
@@ -57,12 +58,18 @@ const styles = StyleSheet.create({
     width: '80%',
     margin: 12,
     borderWidth: 1,
+    borderRadius: 25,
     padding: 10,
   },
   logo: {
     width: 150,
     height: 150,
     marginBottom: 20,
+  },
+  criarConta: {
+    color: 'blue',
+    marginVertical: 15,
+    fontSize: 16
   },
 });
 

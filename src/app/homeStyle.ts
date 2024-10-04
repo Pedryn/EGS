@@ -2,7 +2,7 @@ import { Dimensions, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     categoriaButton: {
-        backgroundColor: '#e0e0e0', // Cor de fundo dos botões
+        backgroundColor: '#B2FF82', // Cor de fundo dos botões
         paddingVertical: 10,        // Espaçamento vertical dentro do botão
         paddingHorizontal: 20,      // Espaçamento horizontal dentro do botão
         borderRadius: 10,           // Borda arredondada
@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,               // Sombras no Android
+    },
+    fundo: {
+        backgroundColor: 'white',
     },
     categoriaIcon: {
         width: 40,   // Largura da imagem
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     card: {
         margin: 10,
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: "#000",
         borderRadius: 10,
         overflow: "hidden",
         alignItems: "center",
@@ -94,7 +97,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     categoriaSelecionada: {
-        backgroundColor: '#a0a0a0', // Cor de fundo diferente para destacar a seleção
+        backgroundColor: '#28a745', // Cor de fundo diferente para destacar a seleção
         borderColor: '#808080',     // Borda para dar destaque
         borderWidth: 2,             // Largura da borda para deixar mais evidente
     },    

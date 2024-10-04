@@ -14,6 +14,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 20,
     },
+    addFotoContainer: {
+        alignItems: 'center', // Centraliza o conteúdo horizontalmente
+        marginBottom: 20,
+    },
+    addFoto: {
+        width: 100,
+        height: 100,
+        marginBottom: 20,
+      },
     buttonText: {
         color: '#000',
         fontSize: 18,
@@ -61,13 +70,15 @@ const styles = StyleSheet.create({
     checkboxContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
+        justifyContent: 'center', // Centraliza as categorias na tela
         marginVertical: 10,
     },
     checked: {
         backgroundColor: '#28a745',
         color: '#fff',
         padding: 10,
-        marginRight: 10,
+        marginRight: 10,  // Espaçamento horizontal
+        marginBottom: 10, // Espaçamento vertical entre as linhas
         borderRadius: 5,
     },
     unchecked: {
@@ -76,9 +87,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#28a745',
         padding: 10,
-        marginRight: 10,
+        marginRight: 10,  // Espaçamento horizontal
+        marginBottom: 10, // Espaçamento vertical entre as linhas
         borderRadius: 5,
     },
+    
 });
 
 export default styles;
