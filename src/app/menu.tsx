@@ -53,13 +53,13 @@ export default function FormsAnuncie() {
                 </TouchableOpacity>
 
                 <Text style={styles.headerText}>Saiba mais sobre Sustentabilidade</Text>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity style={styles.button} onPress={() => router.push('/artigos')}>
                     <Text style={styles.linkText}>Artigos</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity style={styles.button} onPress={() => router.push('/importanciaSustentabilidade')}>
                     <Text style={styles.linkText}>Importância da Sustentabilidade</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => router.push('/carrinho')}>
+                <TouchableOpacity style={styles.button} onPress={() => router.push('/dicas')}>
                     <Text style={styles.linkText}>Guias e dicas para um consumo mais responsável e consciente.</Text>
                 </TouchableOpacity>
             </View>

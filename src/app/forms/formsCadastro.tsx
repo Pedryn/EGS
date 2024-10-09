@@ -3,7 +3,8 @@ import { StyleSheet, View, Text, Alert, Button, TextInput, ScrollView, Touchable
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { addDoc, collection } from "firebase/firestore"; 
-import { db } from "../../../components/config"
+import { db, FIREBASE_AUTH } from "../../../components/config";  // Inclua a instância do auth
+import { createUserWithEmailAndPassword } from "firebase/auth"; // Importe a função de autenticação
 
 export default function FormsCadastro(){
     const [name, setName] = useState('');
@@ -14,35 +15,45 @@ export default function FormsCadastro(){
     const [selectedDay, setSelectedDay] = useState('');
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedYear, setSelectedYear] = useState('');
+    const auth = FIREBASE_AUTH;
 
     function handleNavigate(){
         router.replace("../home");
     }
 
-    function create () {
+    // Função para criar o usuário
+    const create = async () => {
         if (password !== confirmPassword) {
             Alert.alert("Erro", "As senhas não coincidem");
             return;
         }
 
-        //submit data
-        addDoc(collection(db, "usuario"), {
-            name: name,
-            password: password,
-            email: email,
-            telefone: telefone,
-            selectedDay: selectedDay,
-            selectedMonth: selectedMonth,
-            selectedYear: selectedYear
-          }).then(() =>{
-            //data saved successfully!
-            console.log(`data submitted`);
-            handleNavigate(); // Navegar após cadastro
-          }).catch((error) => {
-            // the write failed...
-            console.log(error)
-          });
-    }
+        try {
+            // Criando o usuário no Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Salvando os dados adicionais no Firestore
+            await addDoc(collection(db, "usuario"), {
+                uid: user.uid, // Referência ao ID do usuário criado
+                name: name,
+                email: email,
+                telefone: telefone,
+                dataNascimento: {
+                    day: selectedDay,
+                    month: selectedMonth,
+                    year: selectedYear
+                }
+            });
+
+            // Redirecionar para a home após o cadastro
+            handleNavigate();
+            Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Erro", "Não foi possível cadastrar o usuário.");
+        }
+    };
 
     const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
     const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];

@@ -4,6 +4,7 @@ import { db } from "../../components/config";
 import { collection, getDocs } from "firebase/firestore";
 import styles from "./homeStyle";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { NavigationProp } from "@react-navigation/native";
 
 type Produto = {
     id: string;
@@ -13,7 +14,11 @@ type Produto = {
     categorias: string[];
 };
 
-export default function Home() {
+interface RouterProps {
+    navigation: NavigationProp<any, any>
+}
+
+const Home = ({navigation}: RouterProps) => {
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false); // Estado para o pull to refresh
@@ -112,3 +117,5 @@ export default function Home() {
         </ScrollView>
     );
 }
+
+export default Home;

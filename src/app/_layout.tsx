@@ -81,7 +81,6 @@ export default function Layout() {
             tabBarButton: () => null, // Remove o index da TabBar 
         }} 
       />
-
       <Tabs.Screen 
         name="homeStyle" 
         options={{ 
@@ -90,9 +89,29 @@ export default function Layout() {
             tabBarButton: () => null, // Remove o index da TabBar 
         }} 
       />
-
       <Tabs.Screen 
         name="produto" 
+        options={{ 
+            headerShown: false,
+            tabBarButton: () => null, // Remove o index da TabBar 
+        }} 
+      />
+      <Tabs.Screen 
+        name="importanciaSustentabilidade" 
+        options={{ 
+            headerShown: false,
+            tabBarButton: () => null, // Remove o index da TabBar 
+        }} 
+      />
+      <Tabs.Screen 
+        name="artigos" 
+        options={{ 
+            headerShown: false,
+            tabBarButton: () => null, // Remove o index da TabBar 
+        }} 
+      />
+      <Tabs.Screen 
+        name="dicas" 
         options={{ 
             headerShown: false,
             tabBarButton: () => null, // Remove o index da TabBar 

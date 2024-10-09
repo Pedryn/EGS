@@ -1,13 +1,43 @@
-import React from "react";
-import { Button, StyleSheet, Text, TextInput, View, Image } from "react-native";
+import React, { useState } from "react";
+import { Button, StyleSheet, Text, TextInput, View, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Link } from 'expo-router'
+import { FIREBASE_AUTH } from '../../components/config';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const Index = () => {
-  const [text, onChangeText] = React.useState('');
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoanding] = useState(false);
+  const auth = FIREBASE_AUTH;
 
-  function handleNavigate(){
-    router.replace("/home")
+  const signIn = async () => {
+    setLoanding(true);
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      console.log(response);
+      // Navegar para a Home após login bem-sucedido
+      router.replace("/home");
+    } catch (error: any) {
+      console.log(error);
+      alert('Sign in failed: ' + error.message);
+    } finally {
+      setLoanding(false);
+    }
+  }
+
+  const signUp = async () => {
+    setLoanding(true);
+    try {
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(response);
+    } catch (error: any) {
+      console.log(error);
+      alert('Sign in failed: ' + error.message);
+    } finally {
+      setLoanding(false);
+    }
   }
 
   return (
@@ -20,18 +50,28 @@ const Index = () => {
         <Text style={styles.title}>Login:</Text>
         <TextInput
           style={styles.input}
-          onChangeText={onChangeText}
-          value={text}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
           placeholder="email@email.com"
+          autoCapitalize="none"
         />
         <Text style={styles.title}>Senha</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeText}
-          value={text}
-          placeholder="*********"
+        <TextInput 
+          secureTextEntry={true} 
+          style={styles.input} 
+          onChangeText={(text) => setPassword(text)} 
+          value={password} 
+          placeholder="*********" 
+          autoCapitalize="none"
         />
-        <Button title="Enviar" onPress={handleNavigate}/>
+
+        { loading ? (<ActivityIndicator size='large' color='#0000ff' />)
+        : (
+        <>
+          <Button title="Login" onPress={signIn} />
+        </>
+        )}
+
         <Link style={styles.criarConta} href={'./forms/formsCadastro'}>Criar nova conta</Link>
       </View>
     </SafeAreaView>

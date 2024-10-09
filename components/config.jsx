@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getStorage, ref } from "firebase/storage";
+import { getAuth } from "firebase/auth"
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -29,12 +30,16 @@ export const db = getFirestore(app);
 // Initialize storage
 export const storage = getStorage(app);
 
-// Verifica se o Firebase Analytics é suportado antes de tentar inicializar
-isSupported().then((supported) => {
-  if (supported) {
-    const analytics = getAnalytics(app);
-    console.log("Firebase Analytics inicializado com sucesso.");
-  } else {
-    console.warn("Firebase Analytics não é suportado neste ambiente.");
-  }
-});
+export const FIREBASE_APP = initializeApp(firebaseConfig);
+export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
+export const FIRESTORE_DB = getFirestore(FIREBASE_APP);
+
+// // Verifica se o Firebase Analytics é suportado antes de tentar inicializar
+// isSupported().then((supported) => {
+//   if (supported) {
+//     const analytics = getAnalytics(app);
+//     console.log("Firebase Analytics inicializado com sucesso.");
+//   } else {
+//     console.warn("Firebase Analytics não é suportado neste ambiente.");
+//   }
+// });
