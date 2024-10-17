@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Alert, Button, TextInput, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Alert, TextInput, ScrollView, TouchableOpacity } from "react-native";
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { addDoc, collection } from "firebase/firestore"; 
-import { db, FIREBASE_AUTH } from "../../../components/config";  // Inclua a instância do auth
-import { createUserWithEmailAndPassword } from "firebase/auth"; // Importe a função de autenticação
+import { db, FIREBASE_AUTH } from "../../../components/config"; 
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"; // Inclui updateProfile
 
 export default function FormsCadastro(){
     const [name, setName] = useState('');
@@ -32,6 +32,11 @@ export default function FormsCadastro(){
             // Criando o usuário no Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+
+            // Atualizando o perfil do usuário com o displayName
+            await updateProfile(user, {
+                displayName: name,  // Define o displayName com o nome fornecido
+            });
 
             // Salvando os dados adicionais no Firestore
             await addDoc(collection(db, "usuario"), {

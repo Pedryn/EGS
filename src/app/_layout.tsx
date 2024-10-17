@@ -97,21 +97,21 @@ export default function Layout() {
         }} 
       />
       <Tabs.Screen 
-        name="importanciaSustentabilidade" 
+        name="pagesSustentabilidade/importanciaSustentabilidade" 
         options={{ 
             headerShown: false,
             tabBarButton: () => null, // Remove o index da TabBar 
         }} 
       />
       <Tabs.Screen 
-        name="artigos" 
+        name="pagesSustentabilidade/artigos" 
         options={{ 
             headerShown: false,
             tabBarButton: () => null, // Remove o index da TabBar 
         }} 
       />
       <Tabs.Screen 
-        name="dicas" 
+        name="pagesSustentabilidade/dicas" 
         options={{ 
             headerShown: false,
             tabBarButton: () => null, // Remove o index da TabBar 

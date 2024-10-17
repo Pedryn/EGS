@@ -4,3 +4,13 @@ O Eco Green Shop (ou EGS) é um aplicativo de vendas com foco em produtos susten
 
 As compras são feitas de maneira segura e transparente, tanto com o cliente quanto com o vendedor! Somos apenas o meio mas vocês vendedores e clientes que fazem a engrenagem andar, juntos somos um só!
 
+## Como Executar
+
+Certifique-se de ter o ambiente de desenvolvimento configurado corretamente. Utilize os seguintes comandos para executar o projeto:
+
+```bash
+# Instalar as dependências
+npm install
+
+# Executar o projeto
+npm run android

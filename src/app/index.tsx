@@ -16,16 +16,24 @@ const Index = () => {
     setLoanding(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
+      console.log(response)
+      // Verifica se o nome do usuário está definido
+      if (response.user.displayName) {
+        console.log('Nome do usuário:', response.user.displayName);
+      } else {
+        console.log('Nome do usuário não definido');
+      }
+  
       // Navegar para a Home após login bem-sucedido
       router.replace("/home");
     } catch (error: any) {
       console.log(error);
-      alert('Sign in failed: ' + error.message);
+      alert('Falha no login: ' + error.message);
     } finally {
       setLoanding(false);
     }
-  }
+  };
+  
 
   const signUp = async () => {
     setLoanding(true);
