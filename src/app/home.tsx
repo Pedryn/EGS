@@ -106,8 +106,9 @@ const Home = ({navigation}: RouterProps) => {
                         data={produtosFiltrados}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.id}
-                        numColumns={2}
-                        contentContainerStyle={[styles.listContainer, { alignItems: 'center' }]}
+                        numColumns={2} // Mantém as 2 colunas
+                        columnWrapperStyle={{ justifyContent: 'flex-start' }} // Alinhamento à esquerda
+                        contentContainerStyle={styles.listContainer}
                         refreshControl={
                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                         }

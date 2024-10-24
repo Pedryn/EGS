@@ -55,10 +55,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
     },
     listContainer: {
-        justifyContent: "space-between",
         paddingHorizontal: 10,
-        flexDirection: 'row',
-        flexWrap: 'wrap', // Permite que os itens quebrem para a próxima linha
     },
     card: {
         margin: 10,
@@ -68,7 +65,7 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         alignItems: "center",
         padding: 10,
-        width: Dimensions.get('window').width / 2.3, // Calcula a largura dos itens com base na tela
+        width: Dimensions.get('window').width / 2.3, // Mantém a largura para 2 colunas
     },
     productImage: {
         width: 150,
