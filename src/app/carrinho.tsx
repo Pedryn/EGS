@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, Alert, RefreshControl } from 'react-native';
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { db, FIREBASE_AUTH } from '../../components/config'; // Certifique-se de importar o Auth
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Importando o ícone
+import { db, FIREBASE_AUTH } from '../../components/config'; 
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type CarrinhoItem = {
     id: string;
@@ -15,28 +15,35 @@ type CarrinhoItem = {
 const Carrinho = () => {
     const [carrinhoItems, setCarrinhoItems] = useState<CarrinhoItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchCarrinho = async () => {
+        const user = FIREBASE_AUTH.currentUser;
+        if (user) {
+            const userId = user.uid;
+            try {
+                const q = query(collection(db, 'carrinho'), where('userId', '==', userId));
+                const querySnapshot = await getDocs(q);
+                const items = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                })) as CarrinhoItem[];
+                setCarrinhoItems(items);
+            } catch (error) {
+                console.error('Erro ao buscar itens do carrinho:', error);
+            } finally {
+                setLoading(false);
+                setRefreshing(false);
+            }
+        }
+    };
 
     useEffect(() => {
-        const fetchCarrinho = async () => {
-            const user = FIREBASE_AUTH.currentUser;
-            if (user) {
-                const userId = user.uid;
-                try {
-                    const q = query(collection(db, 'carrinho'), where('userId', '==', userId));
-                    const querySnapshot = await getDocs(q);
-                    const items = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    })) as CarrinhoItem[];
-                    setCarrinhoItems(items);
-                } catch (error) {
-                    console.error('Erro ao buscar itens do carrinho:', error);
-                } finally {
-                    setLoading(false);
-                }
-            }
-        };
+        fetchCarrinho();
+    }, []);
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
         fetchCarrinho();
     }, []);
 
@@ -52,14 +59,6 @@ const Carrinho = () => {
         }
     };
 
-    if (loading) {
-        return <Text>Carregando...</Text>;
-    }
-
-    if (carrinhoItems.length === 0) {
-        return <Text>Seu carrinho está vazio</Text>;
-    }
-
     const renderItem = ({ item }: { item: CarrinhoItem }) => (
         <View style={styles.itemContainer}>
             <Image source={{ uri: item.imageUrls?.[0] }} style={styles.productImage} />
@@ -74,12 +73,23 @@ const Carrinho = () => {
         </View>
     );
 
+    if (loading) {
+        return <Text>Carregando...</Text>;
+    }
+
+    if (carrinhoItems.length === 0) {
+        return <Text>Seu carrinho está vazio</Text>;
+    }
+
     return (
         <FlatList
             data={carrinhoItems}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.listContainer}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
         />
     );
 };
@@ -111,7 +121,7 @@ const styles = StyleSheet.create({
     },
     productDetails: {
         flex: 1,
-        justifyContent: 'center', // Alinha verticalmente
+        justifyContent: 'center',
     },
     productName: {
         fontSize: 18,

@@ -18,10 +18,10 @@ interface RouterProps {
     navigation: NavigationProp<any, any>
 }
 
-const Home = ({navigation}: RouterProps) => {
+const Home = ({ navigation }: RouterProps) => {
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false); // Estado para o pull to refresh
+    const [refreshing, setRefreshing] = useState(false);
     const [filtroCategoria, setFiltroCategoria] = useState<string | null>(null);
     const router = useRouter();
     const { categoria } = useLocalSearchParams();
@@ -42,7 +42,7 @@ const Home = ({navigation}: RouterProps) => {
             console.error("Erro ao buscar produtos:", error);
         } finally {
             setLoading(false);
-            setRefreshing(false); // Para finalizar o refresh
+            setRefreshing(false);
         }
     };
 
@@ -88,7 +88,12 @@ const Home = ({navigation}: RouterProps) => {
     );
 
     return (
-        <ScrollView style={styles.fundo}>
+        <ScrollView 
+            style={styles.fundo}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+        >
             <View style={styles.container}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriasContainer}>
                     {renderCategoriaButton("Reciclado", require('../../assets/images/reciclado.png'))}
@@ -106,17 +111,14 @@ const Home = ({navigation}: RouterProps) => {
                         data={produtosFiltrados}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.id}
-                        numColumns={2} // Mantém as 2 colunas
-                        columnWrapperStyle={{ justifyContent: 'flex-start' }} // Alinhamento à esquerda
+                        numColumns={2}
+                        columnWrapperStyle={{ justifyContent: 'flex-start' }}
                         contentContainerStyle={styles.listContainer}
-                        refreshControl={
-                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                        }
                     />
                 )}
             </View>
         </ScrollView>
     );
-}
+};
 
 export default Home;
