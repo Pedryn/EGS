@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from '../../components/config'; // Certifique-se de importar o Auth
 import { AntDesign } from '@expo/vector-icons';
@@ -116,6 +116,10 @@ const Produto = () => {
         <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity style={styles.buyButton} onPress={() => router.push('/compra/metodoPag')}>
+        <Text style={styles.addButtonText}>Compre Agora</Text>
+      </TouchableOpacity>
+
       <View style={styles.footerSpace} />
     </ScrollView>
   );
@@ -124,6 +128,13 @@ const Produto = () => {
 const styles = StyleSheet.create({
   addButton: {
     backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buyButton: {
+    backgroundColor: '#D0FF6C',
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',

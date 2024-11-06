@@ -55,7 +55,7 @@ const Conta = () => {
             <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/carrinho')}>
               <Text style={styles.actionText}>Carrinho</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/pontos')}>
               <Text style={styles.actionText}>Pontos</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>

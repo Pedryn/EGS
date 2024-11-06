@@ -117,8 +117,28 @@ export default function Layout() {
             tabBarButton: () => null, // Remove o index da TabBar 
         }} 
       />
-    
-    </Tabs>
+      <Tabs.Screen 
+          name="pontos" 
+          options={{ 
+              headerShown: false,
+              tabBarButton: () => null, // Remove o index da TabBar 
+          }} 
+        />
+        <Tabs.Screen 
+          name="compra/metodoPag" 
+          options={{ 
+              headerShown: false,
+              tabBarButton: () => null, // Remove o index da TabBar 
+          }} 
+        />
+        <Tabs.Screen 
+          name="compra/confirmacaoCompra" 
+          options={{ 
+              headerShown: false,
+              tabBarButton: () => null, // Remove o index da TabBar 
+          }} 
+        />
+      </Tabs>
     
   );
 }

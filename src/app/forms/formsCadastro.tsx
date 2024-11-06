@@ -15,6 +15,7 @@ export default function FormsCadastro(){
     const [selectedDay, setSelectedDay] = useState('');
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedYear, setSelectedYear] = useState('');
+    const [pontos, setPontos] = useState(0);
     const auth = FIREBASE_AUTH;
 
     function handleNavigate(){
@@ -48,7 +49,8 @@ export default function FormsCadastro(){
                     day: selectedDay,
                     month: selectedMonth,
                     year: selectedYear
-                }
+                },
+                pontos: pontos,
             });
 
             // Redirecionar para a home após o cadastro
