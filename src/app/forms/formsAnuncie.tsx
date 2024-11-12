@@ -74,7 +74,7 @@ export default function FormsAnuncie() {
             await addDoc(collection(db, "produtos"), {
                 nomeProd: nomeProd,
                 descricao: descricao,
-                preco: preco,
+                preco: parseFloat(preco),
                 quantidade: quantidade,
                 dimensoes: dimensoes,
                 certificacoes: certificacoes,

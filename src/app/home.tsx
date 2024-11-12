@@ -9,7 +9,7 @@ import { NavigationProp } from "@react-navigation/native";
 type Produto = {
     id: string;
     nomeProd: string;
-    preco: string;
+    preco: number;
     imageUrls: string[];
     categorias: string[];
 };
@@ -39,7 +39,7 @@ const Home = ({ navigation }: RouterProps) => {
 
             setProdutos(produtosList);
         } catch (error) {
-            console.error("Erro ao buscar produtos:", error);
+            console.log("Erro ao buscar produtos:", error);
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -72,7 +72,7 @@ const Home = ({ navigation }: RouterProps) => {
         >
             <Image source={{ uri: item.imageUrls?.[0] }} style={styles.productImage} />
             <Text style={styles.productName}>{item.nomeProd}</Text>
-            <Text style={styles.productPrice}>R$ {item.preco}</Text>
+            <Text style={styles.productPrice}>R$ {item.preco.toFixed(2)}</Text>
         </TouchableOpacity>
     );
 

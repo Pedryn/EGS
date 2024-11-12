@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useLocalSearchParams } from 'expo-router';
 import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
-import { db, FIREBASE_AUTH } from '../../components/config'; // Certifique-se de importar o Auth
+import { db, FIREBASE_AUTH } from '../../components/config';
 import { AntDesign } from '@expo/vector-icons';
 
-type Produto = {
+type ProdutoType = {
   nomeProd: string;
   preco: string;
   imageUrls: string[];
@@ -18,12 +19,26 @@ type Produto = {
   fabricante?: string;
 };
 
+type ConfirmacaoCompraParams = {
+  userId: string;
+  produtoId: string;
+  nomeProd: string;
+  preco: string;
+  imageUrls: string[];
+  quantidade: number;
+};
+
+type RootStackParamList = {
+  'compra/confirmacaoCompra': ConfirmacaoCompraParams;
+};
+
 const Produto = () => {
   const { id } = useLocalSearchParams();
-  const [produto, setProduto] = useState<Produto | null>(null);
+  const [produto, setProduto] = useState<ProdutoType | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const screenWidth = Dimensions.get('window').width;
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const fetchProduto = async () => {
@@ -31,9 +46,8 @@ const Produto = () => {
         try {
           const docRef = doc(db, 'produtos', id as string);
           const docSnap = await getDoc(docRef);
-
           if (docSnap.exists()) {
-            setProduto(docSnap.data() as Produto);
+            setProduto(docSnap.data() as ProdutoType);
           }
         } catch (error) {
           console.error('Erro ao buscar produto:', error);
@@ -42,7 +56,6 @@ const Produto = () => {
         }
       }
     };
-
     fetchProduto();
   }, [id]);
 
@@ -54,7 +67,6 @@ const Produto = () => {
     return <Text>Produto não encontrado</Text>;
   }
 
-  // Função para adicionar ao carrinho
   const adicionarAoCarrinho = async () => {
     const user = FIREBASE_AUTH.currentUser;
     if (user) {
@@ -66,7 +78,7 @@ const Produto = () => {
           nomeProd: produto.nomeProd,
           preco: produto.preco,
           imageUrls: produto.imageUrls,
-          quantidade: 1, // Pode permitir que o usuário escolha a quantidade
+          quantidade: 1,
         });
         console.log('Produto adicionado ao carrinho');
       } catch (error) {
@@ -74,6 +86,23 @@ const Produto = () => {
       }
     } else {
       console.log('Usuário não autenticado');
+    }
+  };
+
+  const compra = () => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (user && produto) {
+      const userId = user.uid;
+      navigation.navigate('compra/confirmacaoCompra', {
+        userId: userId,
+        produtoId: id as string,
+        nomeProd: produto.nomeProd,
+        preco: produto.preco,
+        imageUrls: produto.imageUrls,
+        quantidade: 1,
+      });
+    } else {
+      console.log('Usuário não autenticado ou produto não carregado');
     }
   };
 
@@ -93,7 +122,6 @@ const Produto = () => {
         snapToAlignment="center"
         decelerationRate="fast"
       />
-
       <Text style={styles.productPrice}>R$ {produto.preco}</Text>
       <Text style={styles.productName}>{produto.nomeProd}</Text>
 
@@ -111,12 +139,11 @@ const Produto = () => {
         </View>
       )}
 
-      {/* Botão de adicionar ao carrinho */}
       <TouchableOpacity style={styles.addButton} onPress={adicionarAoCarrinho}>
         <Text style={styles.addButtonText}>Adicionar ao Carrinho</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.buyButton} onPress={() => router.push('/compra/metodoPag')}>
+      <TouchableOpacity style={styles.buyButton} onPress={compra}>
         <Text style={styles.addButtonText}>Compre Agora</Text>
       </TouchableOpacity>
 

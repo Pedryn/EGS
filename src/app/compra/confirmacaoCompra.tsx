@@ -5,19 +5,21 @@ import { doc, getDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 
 type RouteParams = {
-    valorProduto?: number;
+    preco?: number;
     pontosUsuario?: number;
+    nomeProd?: string;
+    imageUrls?: string[];
 };
 
-export default function ConfirmacaoPedido() {
+export default function ConfirmacaoCompra() {
     const [user, setUser] = useState<any>(null);
     const [pontosUsuario, setPontosUsuario] = useState<number>(0); // Estado para armazenar os pontos do usuário
     const auth = FIREBASE_AUTH;
     const route = useRoute();
-    const { valorProduto = 0 } = route.params as RouteParams; // Obtém apenas o valor do produto
+    const { preco = 0, nomeProd = 'Produto', imageUrls = [] } = route.params as RouteParams; // Recebe os dados do produto
     const frete = 10.0;
     const descontoPontos = pontosUsuario * 0.01;
-    const totalPedido = valorProduto + frete - descontoPontos;
+    const totalPedido = preco + frete - descontoPontos;
 
     useEffect(() => {
         // Obtém o usuário atual
@@ -49,9 +51,10 @@ export default function ConfirmacaoPedido() {
                     <>
                         <View style={styles.box}>
                             <Text style={styles.heading}>Enviando Para: {user.displayName || 'Nome não definido'}</Text>
+                            <Text style={styles.productName}>{nomeProd}</Text>
                             <View style={styles.infoRow}>
                                 <Text style={styles.label}>Valor:</Text>
-                                <Text style={styles.value}>R$ {valorProduto.toFixed(2)}</Text>
+                                <Text style={styles.value}>R$ {preco.toFixed(2)}</Text>
                             </View>
                             <View style={styles.infoRow}>
                                 <Text style={styles.label}>Frete:</Text>
@@ -106,10 +109,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
     },
-    email: {
-        fontSize: 14,
-        color: 'gray',
+    productName: {
+        fontSize: 18,
+        fontWeight: 'bold',
         marginBottom: 10,
+        color: '#333',
     },
     infoRow: {
         flexDirection: 'row',
@@ -145,3 +149,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
