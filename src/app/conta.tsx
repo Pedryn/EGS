@@ -58,6 +58,9 @@ const Conta = () => {
             <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/pontos')}>
               <Text style={styles.actionText}>Pontos</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/forms/formsEndereco')}>
+              <Text style={styles.actionText}>Endereço</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
                 <Text style={styles.logoutText}>Sair da Conta</Text>
             </TouchableOpacity>

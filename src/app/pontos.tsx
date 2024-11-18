@@ -54,16 +54,41 @@ export default function Pontos() {
             const userId = user.uid;
             const pointsDocRef = doc(db, "pontos", userId);
             try {
-                const novoTotal = pontos + valor;
-                await updateDoc(pointsDocRef, { pontos: novoTotal });
-                setPontos(novoTotal);
-                Alert.alert("Sucesso", `Você ganhou ${valor} pontos! Total: ${novoTotal} pontos.`);
+                const pointsDoc = await getDoc(pointsDocRef);
+    
+                if (pointsDoc.exists()) {
+                    const data = pointsDoc.data();
+                    const ultimaColeta = data.ultimaColeta ? data.ultimaColeta.toDate() : null;
+                    const agora = new Date();
+    
+                    // Verificar se passaram pelo menos 5 minutos
+                    if (ultimaColeta && (agora.getTime() - ultimaColeta.getTime()) < 5 * 60 * 1000) {
+                        const tempoRestante = Math.ceil(
+                            (5 * 60 * 1000 - (agora.getTime() - ultimaColeta.getTime())) / 1000
+                        );
+                        Alert.alert(
+                            "Aguarde",
+                            `Você só pode coletar pontos novamente em ${Math.floor(tempoRestante / 60)} minutos e ${tempoRestante % 60} segundos.`
+                        );
+                        return;
+                    }
+    
+                    // Atualizar os pontos e a última coleta
+                    const novoTotal = pontos + valor;
+                    await updateDoc(pointsDocRef, {
+                        pontos: novoTotal,
+                        ultimaColeta: agora,
+                    });
+                    setPontos(novoTotal);
+                    Alert.alert("Sucesso", `Você ganhou ${valor} pontos! Total: ${novoTotal} pontos.`);
+                }
             } catch (error) {
                 console.error("Erro ao atualizar pontos do usuário:", error);
                 Alert.alert("Erro", "Não foi possível adicionar os pontos.");
             }
         }
     };
+    
 
     useEffect(() => {
         fetchPontos();

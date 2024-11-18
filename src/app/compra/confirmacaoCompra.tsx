@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 import { FIREBASE_AUTH, db } from '../../../components/config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'; // Importe useNavigation
 
 type RouteParams = {
     preco?: number;
@@ -14,12 +15,15 @@ type RouteParams = {
 export default function ConfirmacaoCompra() {
     const [user, setUser] = useState<any>(null);
     const [pontosUsuario, setPontosUsuario] = useState<number>(0); // Estado para armazenar os pontos do usuário
+    const [endereco, setEndereco] = useState<any>(null); // Estado para armazenar o endereço do usuário
+    const [loadingEndereco, setLoadingEndereco] = useState(true); // Estado para indicar carregamento do endereço
     const auth = FIREBASE_AUTH;
     const route = useRoute();
     const { preco = 0, nomeProd = 'Produto', imageUrls = [] } = route.params as RouteParams; // Recebe os dados do produto
     const frete = 10.0;
     const descontoPontos = pontosUsuario * 0.01;
     const totalPedido = preco + frete - descontoPontos;
+    const navigation = useNavigation(); // Adicione esta linha
 
     useEffect(() => {
         // Obtém o usuário atual
@@ -27,6 +31,7 @@ export default function ConfirmacaoCompra() {
         if (currentUser) {
             setUser(currentUser);
             fetchPontosUsuario(currentUser.uid); // Carrega os pontos do usuário do Firestore
+            fetchEnderecoUsuario(currentUser.uid); // Carrega o endereço do usuário do Firestore
         }
     }, []);
 
@@ -44,11 +49,51 @@ export default function ConfirmacaoCompra() {
         }
     };
 
+    // Função para buscar o endereço do usuário do Firestore
+    const fetchEnderecoUsuario = async (userId: string) => {
+        try {
+            const enderecoRef = collection(db, "enderecos");
+            const q = query(enderecoRef, where("userId", "==", userId));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const enderecoData = querySnapshot.docs[0].data();
+                setEndereco(enderecoData); // Define o endereço no estado
+            } else {
+                setEndereco(null); // Nenhum endereço encontrado
+            }
+        } catch (error) {
+            console.error("Erro ao buscar endereço do usuário:", error);
+        }
+        setLoadingEndereco(false);
+    };
+
+    // Função para confirmar o pedido e atualizar pontos do usuário
+    const confirmarPedido = async () => {
+    try {
+        if (user) {
+            const novosPontos = 0;
+            const pontosRef = doc(db, "pontos", user.uid);
+            await updateDoc(pontosRef, { pontos: novosPontos });
+            
+            // Navegar para pixprov com o valor total do pedido
+            navigation.navigate('pixprov', { totalPedido: totalPedido.toFixed(2) });
+
+            Alert.alert("Pedido confirmado!", "Sua compra foi realizada com sucesso.");
+        }
+    } catch (error) {
+        console.error("Erro ao confirmar o pedido:", error);
+        Alert.alert("Erro", "Não foi possível confirmar o pedido.");
+    }
+};
+
+
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
                 {user ? (
                     <>
+                        {/* bloco preço */}
                         <View style={styles.box}>
                             <Text style={styles.heading}>Enviando Para: {user.displayName || 'Nome não definido'}</Text>
                             <Text style={styles.productName}>{nomeProd}</Text>
@@ -73,7 +118,27 @@ export default function ConfirmacaoCompra() {
                                 <Text style={styles.totalValue}>R$ {totalPedido.toFixed(2)}</Text>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.button}>
+                        {/* bloco endereco */}
+                        <Text style={styles.productName}>Endereço de entrega:</Text>
+                        <View style={styles.box}>
+                            <View>
+                                {loadingEndereco ? (
+                                    <Text>Carregando endereço...</Text>
+                                ) : endereco ? (
+                                    <Text style={styles.addressText}>
+                                        {endereco.rua}, {endereco.numero}, {endereco.bairro}, {endereco.cidade} - {endereco.estado}, {endereco.cep}
+                                    </Text>
+                                ) : (
+                                    <Text>Endereço não cadastrado</Text>
+                                )}
+                            </View>
+                        </View>
+                        {/* bloco pagamento */}
+                        <Text style={styles.productName}>Modo de pagamento:</Text>
+                        <View style={styles.box}>
+                            <Text style={styles.totalLabel}>PIX</Text>
+                        </View>
+                        <TouchableOpacity style={styles.button} onPress={confirmarPedido}>
                             <Text style={styles.buttonText}>Confirmar pedido</Text>
                         </TouchableOpacity>
                     </>
@@ -147,6 +212,13 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    addressBox: {
+        marginTop: 16,
+    },
+    addressText: {
+        fontSize: 16,
+        color: '#555',
     },
 });
 

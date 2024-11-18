@@ -6,6 +6,8 @@ import Conta from "./src/app/conta";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./components/config";
+import ConfirmacaoCompra from './src/app/compra/confirmacaoCompra';
+import PagamentoPix from './src/app/compra/PagamentoPix';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -37,6 +39,8 @@ export default function App(){
                 ):(
                     <Stack.Screen name="index" component={Index}  options={{ headerShown: false}}/>
                 )}
+                <Stack.Screen name="ConfirmacaoCompra" component={ConfirmacaoCompra} />
+                <Stack.Screen name="PagamentoPix" component={PagamentoPix} />
             </Stack.Navigator>
         </NavigationContainer>
     );

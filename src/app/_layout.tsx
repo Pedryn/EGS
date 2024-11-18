@@ -138,6 +138,27 @@ export default function Layout() {
               tabBarButton: () => null, // Remove o index da TabBar 
           }} 
         />
+        <Tabs.Screen 
+          name="compra/PagamentoPix" 
+          options={{ 
+              headerShown: false,
+              tabBarButton: () => null, // Remove o index da TabBar 
+          }} 
+        />
+        <Tabs.Screen 
+          name="pixprov" 
+          options={{ 
+              headerShown: false,
+              tabBarButton: () => null, // Remove o index da TabBar 
+          }} 
+        />
+        <Tabs.Screen 
+          name="compra/compras" 
+          options={{ 
+              headerShown: false,
+              tabBarButton: () => null, // Remove o index da TabBar 
+          }} 
+        />
       </Tabs>
     
   );
