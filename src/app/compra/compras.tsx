@@ -1,15 +1,25 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, Alert, RefreshControl } from 'react-native';
-import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { db, FIREBASE_AUTH } from '../../../components/config'; 
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View, Text, FlatList, Image, StyleSheet, RefreshControl } from 'react-native';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db, FIREBASE_AUTH } from '../../../components/config';
 
 type CompraItem = {
     id: string;
-    nomeProd: string;
-    preco: string;
+    nomeProduto: string;
+    precoProduto: string;
     imageUrls: string[];
     quantidade: number;
+    endereco?: {
+        numero: string;
+        rua: string;
+        complemento?: string;
+        bairro: string;
+        userId: string;
+        cep: string;
+        pais: string;
+        cidade: string;
+        estado: string;
+    };
 };
 
 const Compra = () => {
@@ -22,7 +32,7 @@ const Compra = () => {
         if (user) {
             const userId = user.uid;
             try {
-                const q = query(collection(db, 'Compra'), where('userId', '==', userId));
+                const q = query(collection(db, 'compra'), where('userId', '==', userId));
                 const querySnapshot = await getDocs(q);
                 const items = querySnapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -47,29 +57,31 @@ const Compra = () => {
         fetchCompra();
     }, []);
 
-    const handleRemoveItem = async (itemId: string) => {
-        try {
-            const itemRef = doc(db, 'Compra', itemId);
-            await deleteDoc(itemRef);
-            setCompraItems((prevItems) => prevItems.filter(item => item.id !== itemId));
-            Alert.alert("Sucesso", "Item removido do Compra.");
-        } catch (error) {
-            console.error('Erro ao remover item do Compra:', error);
-            Alert.alert("Erro", "Não foi possível remover o item.");
-        }
-    };
-
     const renderItem = ({ item }: { item: CompraItem }) => (
         <View style={styles.itemContainer}>
             <Image source={{ uri: item.imageUrls?.[0] }} style={styles.productImage} />
             <View style={styles.productDetails}>
-                <Text style={styles.productName}>{item.nomeProd}</Text>
-                <Text style={styles.productPrice}>R$ {item.preco}</Text>
-                <Text style={styles.productQuantity}>Quantidade: {item.quantidade}</Text>
+                <Text style={styles.productName}>{item.nomeProduto}</Text>
+                <Text style={styles.productPrice}>R$ {item.precoProduto}</Text>
+
+                {/* Verifica se há endereço e exibe */}
+                {item.endereco && (
+                    <View style={styles.addressContainer}>
+                        <Text style={styles.addressTitle}>Endereço de entrega:</Text>
+                        <Text style={styles.addressText}>
+                            {item.endereco.rua}, {item.endereco.numero}
+                        </Text>
+                        {item.endereco.complemento && (
+                            <Text style={styles.addressText}>Complemento: {item.endereco.complemento}</Text>
+                        )}
+                        <Text style={styles.addressText}>
+                            {item.endereco.bairro}, {item.endereco.cidade} - {item.endereco.estado}
+                        </Text>
+                        <Text style={styles.addressText}>CEP: {item.endereco.cep}</Text>
+                        <Text style={styles.addressText}>{item.endereco.pais}</Text>
+                    </View>
+                )}
             </View>
-            <TouchableOpacity onPress={() => handleRemoveItem(item.id)} style={styles.removeButton}>
-                <Icon name="delete" size={24} color="#d9534f" />
-            </TouchableOpacity>
         </View>
     );
 
@@ -78,7 +90,7 @@ const Compra = () => {
     }
 
     if (CompraItems.length === 0) {
-        return <Text>Seu Compra está vazio</Text>;
+        return <Text>Seu histórico de compras está vazio</Text>;
     }
 
     return (
@@ -87,9 +99,7 @@ const Compra = () => {
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.listContainer}
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         />
     );
 };
@@ -101,7 +111,7 @@ const styles = StyleSheet.create({
     },
     itemContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         backgroundColor: '#f9f9f9',
         padding: 16,
         borderRadius: 8,
@@ -137,8 +147,20 @@ const styles = StyleSheet.create({
         color: '#757575',
         marginTop: 4,
     },
-    removeButton: {
-        marginLeft: 16,
+    addressContainer: {
+        marginTop: 12,
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#e0e0e0',
+    },
+    addressTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    addressText: {
+        fontSize: 14,
+        color: '#757575',
     },
 });
 

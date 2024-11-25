@@ -46,7 +46,7 @@ const Conta = () => {
 
           {/* Botões de ações */}
           <View style={styles.actionContainer}>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/compra/compras')}>
               <Text style={styles.actionText}>Compras</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>

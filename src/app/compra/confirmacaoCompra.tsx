@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 import { FIREBASE_AUTH, db } from '../../../components/config';
-import { doc, getDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, updateDoc, addDoc } from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native'; // Importe useNavigation
 
@@ -70,23 +70,40 @@ export default function ConfirmacaoCompra() {
 
     // Função para confirmar o pedido e atualizar pontos do usuário
     const confirmarPedido = async () => {
-    try {
-        if (user) {
-            const novosPontos = 0;
-            const pontosRef = doc(db, "pontos", user.uid);
-            await updateDoc(pontosRef, { pontos: novosPontos });
-            
-            // Navegar para pixprov com o valor total do pedido
-            navigation.navigate('pixprov', { totalPedido: totalPedido.toFixed(2) });
+        try {
+            if (user) {
+                const novosPontos = 0;
+                const pontosRef = doc(db, "pontos", user.uid);
 
-            Alert.alert("Pedido confirmado!", "Sua compra foi realizada com sucesso.");
+                // Atualiza os pontos do usuário
+                await updateDoc(pontosRef, { pontos: novosPontos });
+
+                // Adiciona os dados da compra na coleção "compra"
+                const compraData = {
+                    userId: user.uid,
+                    nomeUsuario: user.displayName || 'Nome não definido',
+                    nomeProduto: nomeProd,
+                    precoProduto: preco,
+                    frete: frete,
+                    desconto: descontoPontos,
+                    totalPedido: totalPedido,
+                    endereco: endereco || 'Endereço não cadastrado',
+                    dataCompra: new Date(),
+                    imageUrls: imageUrls,
+                };
+
+                await addDoc(collection(db, "compra"), compraData);
+
+                // Navegar para a próxima tela
+                navigation.navigate('pixprov', { totalPedido: totalPedido.toFixed(2) });
+
+                Alert.alert("Pedido confirmado!", "Sua compra foi realizada com sucesso.");
+            }
+        } catch (error) {
+            console.error("Erro ao confirmar o pedido:", error);
+            Alert.alert("Erro", "Não foi possível confirmar o pedido.");
         }
-    } catch (error) {
-        console.error("Erro ao confirmar o pedido:", error);
-        Alert.alert("Erro", "Não foi possível confirmar o pedido.");
-    }
-};
-
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -221,4 +238,3 @@ const styles = StyleSheet.create({
         color: '#555',
     },
 });
-

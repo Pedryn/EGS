@@ -69,7 +69,6 @@ export default function Layout() {
         name="forms/formsEndereco" 
         options={{ 
             headerShown: false,
-            tabBarStyle: { display: 'none' }, // Esconde a TabBar na tela index
             tabBarButton: () => null, // Remove o index da TabBar 
         }} 
       />

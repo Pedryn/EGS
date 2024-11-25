@@ -1,30 +1,32 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View, Image, ActivityIndicator } from "react-native";
+import { Button, StyleSheet, Text, TextInput, View, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, Link } from 'expo-router'
+import { router, Link } from 'expo-router';
 import { FIREBASE_AUTH } from '../../components/config';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { Ionicons } from '@expo/vector-icons'; // Ícones para o "olhinho"
 
 const Index = () => {
-  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // Controle do "olhinho"
   const [loading, setLoanding] = useState(false);
   const auth = FIREBASE_AUTH;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const signIn = async () => {
     setLoanding(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response)
-      // Verifica se o nome do usuário está definido
+      console.log(response);
       if (response.user.displayName) {
         console.log('Nome do usuário:', response.user.displayName);
       } else {
         console.log('Nome do usuário não definido');
       }
-  
-      // Navegar para a Home após login bem-sucedido
       router.replace("/home");
     } catch (error: any) {
       console.log(error);
@@ -33,7 +35,6 @@ const Index = () => {
       setLoanding(false);
     }
   };
-  
 
   const signUp = async () => {
     setLoanding(true);
@@ -46,7 +47,7 @@ const Index = () => {
     } finally {
       setLoanding(false);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,22 +65,30 @@ const Index = () => {
           autoCapitalize="none"
         />
         <Text style={styles.title}>Senha</Text>
-        <TextInput 
-          secureTextEntry={true} 
-          style={styles.input} 
-          onChangeText={(text) => setPassword(text)} 
-          value={password} 
-          placeholder="*********" 
-          autoCapitalize="none"
-        />
-
-        { loading ? (<ActivityIndicator size='large' color='#0000ff' />)
-        : (
-        <>
-          <Button title="Login" onPress={signIn} />
-        </>
+        <View style={styles.inputContainer}>
+          <TextInput 
+            secureTextEntry={!showPassword} 
+            style={styles.inputWithIcon} 
+            onChangeText={(text) => setPassword(text)} 
+            value={password} 
+            placeholder="*********" 
+            autoCapitalize="none"
+          />
+          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+            <Ionicons 
+              name={showPassword ? "eye-off" : "eye"} 
+              size={24} 
+              color="gray" 
+            />
+          </TouchableOpacity>
+        </View>
+        {loading ? (
+          <ActivityIndicator size='large' color='#0000ff' />
+        ) : (
+          <>
+            <Button title="Login" onPress={signIn} />
+          </>
         )}
-
         <Link style={styles.criarConta} href={'./forms/formsCadastro'}>Criar nova conta</Link>
       </View>
     </SafeAreaView>
@@ -108,6 +117,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 25,
     padding: 10,
+    paddingHorizontal: 15,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%',
+    marginBottom: 12,
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
+  },
+  inputWithIcon: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+  },
+  iconContainer: {
+    padding: 5,
   },
   logo: {
     width: 150,
@@ -117,7 +145,7 @@ const styles = StyleSheet.create({
   criarConta: {
     color: 'blue',
     marginVertical: 15,
-    fontSize: 16
+    fontSize: 16,
   },
 });
 
